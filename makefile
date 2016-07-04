@@ -49,7 +49,8 @@ build: init write-version
 	rsync -a ${SRC_DIR}/${ORG_DIR} ${BUILD_DIR}/docs
 	rsync -a ${SRC_DIR}/${STYLE_DIR} ${BUILD_DIR}/docs
 	rm -f ${BUILD_DIR}/docs/*.html~
-	cp ${SRC_DIR}/implementation/word_list.p ${BUILD_DIR}/code/webservices/
+	cp ${SRC_DIR}/webservices/word_list.p ${BUILD_DIR}/code/webservices/
+	cp ${SRC_DIR}/selenium/chromedriver ${BUILD_DIR}/code/selenium/
 
 # get the latest commit hash and its subject line
 # and write that to the VERSION file
