@@ -48,6 +48,43 @@ At the highest level, our System requirements are
 + (Rq-F-3) The user should also be allowed to inject new scripts into the input document.
 + (Rq-F-4) The changes made by the user must persist.
 
+The system requirements can be further divided into a grid of requirements: On one side we can have the item on which we wish to operate upon. On the other side we can have the operation we seek. Here then is the table of requirements
+
+|              | Create(C) | Read (R) | Update (U) | Delete (D) |
+|--------------+-----------+----------+------------+------------|
+| Node Content | RqS1      | RqS2     | RqS3       | RqS4       |
+| Node         | RqS5      | RqS6     | RqS7       | RqS8       |
+| Tags         | RqS9      | RqS10    | RqS11      | RqS12      |
+| Script       | RqS13     | RqS14    | RqS15      | RqS16      |
+| Doc Flow     | RqS17     | RqS18    | RqS19      | RqS20      |
+|              |           |          |            |            |
+
+This grid can now be converted into a set of requirements.
+
+| Req Set | RqID | Requirement Description                                                                        |
+|---------+------+------------------------------------------------------------------------------------------------|
+| RqS1    |      | The content in a DOM node should be creatable. i.e. new content should be addable.             |
+| RqS2    |      | The content in a DOM node should be readable.                                                  |
+| RqS3    |      | The content in a DOM node should be replaceable.                                               |
+| RqS4    |      | The content in a DOM node should be deleteable.                                                |
+| RqS5    |      | Should be able to add a new DOM.                                                               |
+| RqS6    |      | Should be able to read the content of a DOM node. Same as RqS2?                                |
+| RqS7    |      | Should be able to replace a DOM node with another DOM element.                                 |
+| RqS8    |      | Should be able to delete a DOM node                                                            |
+| RqS9    |      | Given a portion of a DOM node, that content should be tagged as per user defn.                 |
+| RqS10   |      | Given a portion of a DOM node, that content's tag should be accessible.                        |
+| RqS11   |      | Given a portion of a DOM node, that content's tag should be replaceable with a user given tag. |
+| RqS12   |      | Given a portion of a DOM node, that content's tag should be deletable.                         |
+| RqS13   |      | Should be able to create and inject a new script within the web document.                      |
+| RqS14   |      | Should be able to access (read) an existing script within the web document.                    |
+| RqS15   |      | Should be able to replace an existing script with a user given script.                         |
+| RqS16   |      | Should be able to delete a user identified script within a web document.                       |
+| RqS17   |      | Should be able to create a new document (node) flow.                                           |
+| RqS18   |      | Should be able to access the current document flow.                                            |
+| RqS19   |      | Should be able to replace the current flow with a user defined doc flow.                       |
+| RqS20   |      | Should be able to delete the existing document flow.                                           |
+|         |      |                                                                                                |
+
 These system requirements would deliver us a Framework which would enable us to apply renarration concepts to specific cases.
 
 In this Sematic Transformation project work, we wish to appy renarration to two use cases: 1) English Learning, 2) Language Translation activities as well. In practice what this means is that an HTML page should be renarratable into 1) a Phonetic alphabet, and/ or 2) some other non-English language. For this our requirements are:
@@ -58,10 +95,55 @@ In this Sematic Transformation project work, we wish to appy renarration to two 
 
 
 * Design
+We begin with a few assumptions:
++ we are dealing with a HTML document (as opposed to a XML doc)
++ we are dealing with a static HTML doc (as opposed to a page with content that gets created on the run)
++ we are dealing with 
 
+
+* Development
+** Strategy for Development
+Here is our highlevel approach strategy for development
++ we narrow our scope to something very specific
++ we add variability and features in increments
++ we optimize at the end (after we have the basic variability, features in our working code)
++ we will reuse SWtStore 
++ we will reuse existing Schemas (from places like Schema.org)
+
+Our system will be developed in stages. Each will be released as per the release plan of r0, r1
+
+*** r0
+In this release we aim to develop a web app that is able to fetch a page based on user's input. This page should allow for words to be chosen on the page for Phonetic and Language transformation. The emphasis of this release is to test out the use of repository, to test out use of libraries, to fix coding language, to get acquainted with the overall system.
+
+[[./implementation.org]]
+
+
+*** r1
+In this release we aim to modularize and seperate the code. We aim to develop a Document Manager (called Joiner) which effectively integrates all the Web Services. The joiner will focus on most of the Framework requirements given in the Requirements section. 
+
+The web services (micro services) will implement some of the features like Phonetics, language translations, Unit translations etc. These are going to leverage the Joiner but they will be seperate from the Joiner code.
+
+[[./implementation.org]]
 
 * Implementation
+We will deliver the system in releases titled r0, r1, r2... Each release will be implemented, archived in GitHub repository and finally deployed on the web behind IIIT-Hyd firewall. 
 
+On GitHub, the coding will be done in seperate cloned repository. The final code will be pulled into the VLEAD repository after adequate review. 
+
+Joiner code and WebServices code will be seperately developed. They will each have their own strategy for development and deployment.
+
+** r0
+In this release the implementation is given in 
++ [[./selinium.org][selinium code]]
++ [[./webservices.org][webservices code & explanation]]
++ [[./annolet.org][UI for the system]]
+
+
+** r1
+In this release the implementation is given in 
++ [[./selinium.org][selinium code]]
++ [[./webservices.org][webservices code & explanation]]
++ [[./annolet.org][UI for the system]]
 
 * Unit Test
 
