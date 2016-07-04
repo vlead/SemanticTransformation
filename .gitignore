@@ -14,3 +14,7 @@ src/style
 sitemap*
 lint_output
 venv/
+*.py~
+*.org~
+*.html~
+
