@@ -198,10 +198,10 @@ Joiner code and WebServices code will be seperately developed. They will each ha
 
 ** r0
 In this release the implementation is given in 
-+ code & explanation for how we  [[./implementation/selenium.org][inject]] JavaScript code into an existing
++ code & explanation for how we  [[./selenium/selenium.org][inject]] JavaScript code into an existing
   page. This is the Selinium work.
-+ [[./implementation/webservices.org][webservices code & explanation]]
-+ [[./implementation/annolet.org][UI for the system]]
++ [[./webservices/webservices.org][webservices code & explanation]]
++ [[./annolet/annolet.org][UI for the system]]
 
 
 ** r1
