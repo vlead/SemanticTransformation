@@ -24,7 +24,11 @@ Change secret key in the config file by editing the string inside the conf.py fi
 ```
 vi conf.py
 ```
-Add the full absolute path for the Selenium Chrome Driver.
+Add the full absolute path for the Selenium Chrome Driver. The changed file should look like this:
+```
+SECRET_KEY = ('mySecretKey',) # some long string
+CHROME_DRIVER_PATH = ('/home/workingFolder/src/selenium/chromedriver',) #complete path to chromedriver
+```
 
 ### Create Virtual Environment
 Now we need to create a virtual environment in which we can execute the Selenium code. This is facilitated thru the setup.sh file. Run the file setup.sh by command
