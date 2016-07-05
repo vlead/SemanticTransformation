@@ -15,7 +15,7 @@ make
 ## Setup the Selinium Server
 The following steps are needed for setting up the Selenium server. This is needed in the backend to inject the first JavaScript code bookmarklet code (called Annolet for r0, annd Joiner for r1). 
 
-1. we need to configuration of the Selenium Server with a secret key. To do this we need to edit the conf.py file in build/code/selenium directory. 
+1. we need to configuration of the Selenium Server with a secret key and path for the Selenium Chrome Driver. To do this we need to edit the conf.py file in build/code/selenium directory. 
 ```
 cd /build/code/selenium
 ```
@@ -23,14 +23,13 @@ Change secret key in the config file by editing the string inside the conf.py fi
 ```
 vi conf.py
 ```
+Add the full absolute path for the Selenium Chrome Driver.
 
 2. Now we need to create a virtual environment in which we can execute the Selenium code. This is facilitated thru the setup.sh file. Run the file setup.sh by command
 ```
 bash setup.sh
 ```
-
 Here you will be asked to enter your root password. This is for agt-get command and not for pip install. Packages for virtual environment, Selinium and the application are being installed. This command will take a few minutes to execute.
-
 This should setup a new flask directory for you. This is where the virtual environment exists.
 
 3. Now you can activate the virtual enviornment by command
@@ -42,12 +41,10 @@ source ./flask/bin/activate
 ```
 python app.py &
 ```
-
 When you run the Selenium Server, you should see this prompt on your terminal
 ```
 Running on http://127.0.0.1:8000/ (Press CTRL+C to quit)
 ```
-
 After you are done and you no longer need the server, you may choose to deactivate the virtual environment by command
 ```
 deactivate
@@ -60,16 +57,13 @@ deactivate
 ```
 cd /build/code/webservices
 ```
-
 Note that Selinium Server will have its own virtual environment and this will have its own virtual environment. It is for this reason that we opened a new Terminal window.
 
 2. we need to create a virtual environment in which we can execute the Web Services code. This is facilitated thru the setup.sh file. Run the file setup.sh by command
 ```
 bash setup.sh
 ```
-
 Here you will be asked to enter your root password. This is for agt-get command and not for pip install. Packages for virtual environment, Web Services are being installed. This command will take a few minutes to execute.
-
 This should setup a new flask directory for you. This is where the virtual environment exists.
 
 3. Now you can activate the virtual enviornment by command
@@ -81,7 +75,6 @@ source ./flask/bin/activate
 ```
 python run.py &
 ```
-
 When you run the Web Services Server, you should see this prompt on your terminal
 ```
 * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
@@ -94,7 +87,6 @@ The prompt should be something like this
 * Debugger is active!
 * Debugger pin code: 327-972-303
 ```
-
 After you are done and you no longer need the server, you may choose to deactivate the virtual environment by command
 ```
 deactivate
@@ -106,7 +98,6 @@ open a browser. We recommend Firefox (as Selenium is set to run on it). Chrome, 
 ```
 127.0.0.1:8000
 ```
-
 This is the local host addr with the 8000 port for running Selenium
 
 ## 
