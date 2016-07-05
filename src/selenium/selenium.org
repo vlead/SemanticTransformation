@@ -176,9 +176,10 @@ if __name__ == '__main__':
 * configuration
 
 Setting up the secret key for your application
-
+Adding path to chromedriver for Chrome browser support
 #+BEGIN_SRC python :tangle ../../code/selenium/conf.py :eval no
-SECRET_KEY = ('') # some long string
+SECRET_KEY = ('',) # some long string
+CHROME_DRIVER_PATH = ('',) #complete path to chromedriver
 #+END_SRC
 
  
