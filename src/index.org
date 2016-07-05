@@ -3,7 +3,7 @@
 #+DATE: [2016-06-24 Wed]
 #+PROPERTY: results output
 #+PROPERTY: exports code
-#+SETUPFILE: ../org-templates/level-1.org
+#+SETUPFILE: org-templates/level-0.org
 #+options: ^:nil
 #+LATEX: Literal LaTeX code for export
 
@@ -198,7 +198,7 @@ Joiner code and WebServices code will be seperately developed. They will each ha
 
 ** r0
 In this release the implementation is given in 
-+ code & explanation for how we  [[./implementation/selinium.org][inject]] JavaScript code into an existing
++ code & explanation for how we  [[./implementation/selenium.org][inject]] JavaScript code into an existing
   page. This is the Selinium work.
 + [[./implementation/webservices.org][webservices code & explanation]]
 + [[./implementation/annolet.org][UI for the system]]
