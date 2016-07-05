@@ -1,4 +1,4 @@
-#+title: Implementation of python app using selenium library to add the base javascript.
+#+title: Python app using selenium library to add the base javascript.
 #+AUTHOR: Raghav Mittal
 #+DATE: [2016-06-16 Thu]
 #+PROPERTY: results output
@@ -8,6 +8,12 @@
 #+LATEX: Literal LaTeX code for export
 
 
+* Role
+
++ Role of this application is to take input URL and return the webpage with
+  required tools to transform the webpage
++ Input is the URL of the required webpage
++ output is the webpage plus the loaded javascript to transform the content on page
 
 
 * Imports
@@ -38,6 +44,9 @@ app.config['SECRET_KEY'] = conf.SECRET_KEY[0]
 
 * form
 
+The initial form used to take the input from the user .
++ It is mandatory for the user to enter the URL.
+
 #+BEGIN_SRC python :tangle ../../code/selenium/app.py :eval no
 
 class url_form(Form):
@@ -48,6 +57,10 @@ class url_form(Form):
 
 
 * API
+
+The API used for the application .
++ renders the form for taking input URL.
+
 
 #+BEGIN_SRC python :tangle ../../code/selenium/app.py :eval no
 
@@ -75,6 +88,26 @@ def index():
 
 
 * webdriver
+
+This function opens a new browser and injects the required javascript into the
+head section of the webpage.
+
+** Explanation
+
+This is brief explanation of key commands used in the webdriver.
+
+#+BEGIN_EXAMPLE
+driver = webdriver.Firefox()
+#+END_EXAMPLE
+The above example opens a new firefox browser .
+
+#+BEGIN_EXAMPLE
+head_element = WebDriverWait(driver, 30).until(lambda driver: driver.find_element_by_tag_name('head'))
+#+END_EXAMPLE
+The above line tell the driver to wait (max 30 seconds ) for the head section
+to load completely.
+
+** code
 
 #+BEGIN_SRC python :tangle ../../code/selenium/app.py :eval no
 
@@ -122,6 +155,8 @@ def enjoy():
 
 * run
 
+Running the application.
+
 #+BEGIN_SRC python :tangle ../../code/selenium/app.py :eval no
 
 if __name__ == '__main__':
@@ -132,12 +167,16 @@ if __name__ == '__main__':
 
 * configuration
 
+Setting up the secret key for your application
+
 #+BEGIN_SRC python :tangle ../../code/selenium/conf.py :eval no
 SECRET_KEY = ('') # some long string
 #+END_SRC
 
  
-* setup
+* Dependencies
+
+Following lists the dependencies required for the running the application
 
 #+BEGIN_SRC python :tangle ../../code/selenium/setup.sh :eval no
 
@@ -160,6 +199,26 @@ flask/bin/pip install -U flask-cors
 #+END_SRC
 
 
-* setup steps
 
 
+
+* Setup the server
+
+The following steps are needed for setting up the server
+
++ run the file setup.sh by command 
+#+BEGIN_EXAMPLE 
+bash setup.sh
+#+END_EXAMPLE
+
++ Enter your secret key in the conf.py file
+
++ Activate the virtual enviornment by command 
+#+BEGIN_EXAMPLE
+source flask/bin/activate
+#+END_EXAMPLE
+
++ run the application by command
+#+BEGIN_EXAMPLE
+python app.py
+#+END_EXAMPLE
