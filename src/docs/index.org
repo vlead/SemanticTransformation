@@ -8,6 +8,8 @@
 #+LATEX: Literal LaTeX code for export
 
 * Version/Branch History
+we are planning to use the same document (with different versions) to document
+the work for our Rennarration web Application document.
 
 - =v1.0= :: Initial version to start the doc & development of the system. 
 
@@ -29,7 +31,7 @@ We are using the term /Renarration/ to refer to the new Semantically Transformed
 At the system level, our intent is to take in some web content and transform it. The transformation of the input content can be manual (by experts from a crowd sourced environment) or automatic (as a web service which is triggered by some event).
 
 #+CAPTION: General View of the semantic transformation system
-  [[./docs/diagrams/syst_view1.png]]
+  [[./diagrams/syst_view1.png]]
 
 In a web related context, the input is a HTML document. The output is also a HTML document. However, due to transformation, the output may or may not have
 + modified DOM elements
@@ -37,10 +39,14 @@ In a web related context, the input is a HTML document. The output is also a HTM
 + modified tags
 + in/excluded scripts
 
-The output /O/, therefore, is a function /F/ of expert made modifications, and input /I/.
+The output /O/, therefore, is a function /F/ of expert made modifications, and
+input /I/. The Input will be in HTML. Output will also be HTML but potentially enhanced
+with new DOM structures, new tags, new flow, new content etc. Expert
+modifications will be made by Renarrators. They will potentially annotate,
+change tags, insert scripts, modify content etc.  
 
 #+CAPTION: Web Content related vView of our semantic transformation system
-  [[./docs/diagrams/syst_view1.png]]
+  [[./diagrams/syst_view2.png]]
 
 At the highest level, our System requirements are
 + (Rq-F-1) Develop a web based system that is able to take an HTML marked up web page as input and output a user or system modified HTML page. 
@@ -94,11 +100,65 @@ In this Sematic Transformation project work, we wish to appy renarration to two 
 + (Rq-Ws-2) Develop an instance of renarration that does date format change. That is, given an text page containing a date format, when the user selects the date and identifies a new format, the system should modify the selected content into its  equivalent new date format. These changes need not persist.
 
 
+* Use Cases
+Here are few use cases for our system
++ A user goes to a web app page, fetches a document and notices that there are
+  multiple renarrations available for it. The user can choose whichever version
+  he wishes to access.
++ A user access a renarrated document from our web app
++ A user fetches a page and renarrates it. The renarrations can include
+  modifications of content, tags, DOM nodes, and document flow. The
+  modification operations include basic CRUD (create, read, update, delete)
+  functions.
++ A user wishes to save (persistence) the changes he has made.  
+
+From a specific applications point of view, here are some use case scenarios
++ A user fetches a page and wishes to get a word, or an entire node translated.
++ A user fetches a page and wishes to get a word, or an entire node
+  Phonetically modified
++ A user fetches a page and wishes to get the audio for a word, or an entire node
+  that she has earmarked
++ A user wishes to arbitrarily tag a word that she earmarks on the page
+
 * Design
 We begin with a few assumptions:
 + we are dealing with a HTML document (as opposed to a XML doc)
 + we are dealing with a static HTML doc (as opposed to a page with content that gets created on the run)
 + we are dealing with 
+
+Originally we conceived an elaborate system design (explained in the History
+section) with SSSRenarratorStudio, SSSConfigurator, SSSStorage, SSSBrowser
+components. These were to be reused from existing Alipi code. However, over
+time, with new functionality and more library code reuse and for simplicity
+sake, we have abandoned reuse of Alipi and are working on a more JavaScript and
+Selinium based model.
+
+Essentially the system is supposed to do two things: One, be able to annotate
+the source document, and two, semantically transform the source document. This
+is shown here as a ladder of abstraction.
+
+#+CAPTION: ladder of abstraction showing two primary functionss of our semantic transformation system
+  [[./diagrams/ladder_of_abstraction.png]]
+
+The annotation of the document is the first function of our system. This is
+seen as an overlay on the original document. As a document goes through
+multiple renarrations,we can foresee multiple layers of annotation as
+well. That is, an HTML page can be tagged with RDFa/schema1 once and with
+RDFa/schema2 at yet another time. Also, the second annotation need not be in
+RDFa. 
+
+#+CAPTION: Annotation is seen as an overlay on the existing document.
+  [[./diagrams/overlay.png]] 
+
+For a JavaScript based design we are proposing to use micro-services pattern of
+architecture. The various renarrations on the page will be provided as
+services. The services will be pegged on the source document by using a Joiner
+code. The Joiner will be like a Document Manager which will, through a UI,
+allow the user to use one of the micro services on the page. The micro-services
+will potentially be independently developed.
+
+#+CAPTION: Micro services & joiner based system architecture
+  [[./diagrams/joiner_arch.png]]
 
 
 * Development
@@ -148,7 +208,17 @@ In this release the implementation is given in
 * Unit Test
 
   About unit testing
-* Components of a web application
+
+* Design & Development History
+Historically Alipi was the inspiration for rennarration work. A new system was
+conceived to be based on this Alipi code. However, we evolved the design in
+such a way that we are now not using Alipi but more of a injected JavaScript
+code. The injected code is that of Joiner, which is essentially a document
+manager, which helps user to use rennarration services, which are provided as
+micro services.
+
+The earlier system description is like this.
+** Components from an earlier design
 This Semantic Transformation web application is also referred to as Semantic Style Sheets or Renarration.
 
 The Semantic Transformation system will have the following multiple components:  
