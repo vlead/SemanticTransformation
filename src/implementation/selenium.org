@@ -33,8 +33,8 @@ app.config['SECRET_KEY'] = conf.SECRET_KEY[0]
 
 #+END_SRC
 
-* form
-It will get webpage which user wants to annotate.
+* Form
+User gives URL of webpage which he wants to annotate.
 #+BEGIN_SRC python :tangle ../../code/selenium/app.py :eval no
 
 class url_form(Form):
@@ -70,11 +70,11 @@ def index():
 #+END_SRC
 
 
-* webdriver
-Selenium driver is a web automation tool which I am using here to open webpage and inject javascript into into the DOM which will load Annolet.
-Function run_selenium will first check the present browser and get its version, browser name, platform(windows/linux/mac) and user_agent string which is related to browser. This information will tell about the current browser.
-Then object of webdriver will be created which will trigger new browser window and open the URL given by user. 
-It will wait(for maximum 30 seconds) for header of page to load completely and then inject JS into it.
+* Webdriver
++ Selenium webdriver is a web automation tool which is used to open webpage and inject javascript into DOM. That script will load Annolet.
++ Function =run_selenium= will get browser version, browser name, platform(windows/linux/mac) and user_agent string which will provide information about current browser in which user is logged in.
++ Then object of webdriver will be created which will trigger new browser window and open the URL given by user. 
++ It will wait(for maximum 30 seconds) for head of DOM to load completely and then inject JS into it.
 
 #+BEGIN_SRC python :tangle ../../code/selenium/app.py :eval no
 
