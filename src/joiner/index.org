@@ -1,0 +1,251 @@
+#+title: Webservice services integration tool - Joiner
+#+AUTHOR: Raghav Mittal
+#+DATE: [2016-07-14 Thu]
+#+PROPERTY: results output
+#+PROPERTY: exports code
+#+SETUPFILE: ../org-templates/level-1.org
+#+options: ^:nil
+#+LATEX: Literal LaTeX code for export
+
+* Background and Motivation
+We were working on development of AnnoletJS to demonstrate different features like rennaration, tagging, highlighting but the model we followed needed annolet code to be modified whenever a new feature was introduced. This was not scalable and was not the best way. We decided to separate webservices and annolet. Now our project is divided into two components - Joiner, Webservices.
+This will increase scalability because now webservices are independent from annolet. Anyone can create webservices without knowledge of annolet code.
+
+* Requirements
+  + It must act as a breadboard on which independent webservices can be plugged in, which will add them to frontend.
+  + User must be able to use different webservices to annotate the document.
+  + It should provide persistance for all the webservices.
+
+* Use Cases
+    + User can access different independent webservices easily from one menu.
+    + User can save annotations done on DOM.
+    + User can reload older annotations on the page.
+    + Webservice developer can quickly integrate webservices into annolet menu.
+
+* Specs
++ The joiner has following components
+  - JSON Manifest file
+  - JoinerJS
+
++ Manifest file will be provide information about web services. It is a JSON file which contains information about
+   - name of menu option to be created and name of function to be called to run webservice.
+   - HTML and CSS files needed for UI
+   - JS files needed for functionality and interaction with server
++ Joiner JS program will use manifest file to locate and load the webservices by injecting JS and HTML/CSS given in manifest into DOM. Hence exposing user directly to webservices.
++ For User Interface, webservice called Annolet will be loaded. It will provide user interface for Menu which will contain options for all other webservices.
++ For persistence, we will use IBM Cloudant DbaaS. It is CouchDB NoSQL database, which can be operated using REST API. Details will be discussed later.
++ The code is written in JavaScript and jQuery 1.7 is used.  
+* Implementation
+** Manifest file
++ It is JSON file which provides a way to webservice developer to integrate service with Joiner, so that user can use it. Below is the format of manifest JSON file. Developer will specify different values here. Different functions which will be discussed later will use this file to integrate webservices into joiner and create annolet UI.
+#+NAME: manifest_example
+#+begin_src js
+{
+	"fileCSS": null, // location of CSS file to be injected into DOM
+	"HTMLParentTagName": null, // tag name under which new HTML tag will be appended
+	"HTMLParentTagNameIndex": null, // index of the parent tag if there are multiple tags of same name
+	"newTagName": null, // name of new tag to be created
+	"newTagId": null, // ID of new tag
+	"newTagClass": null, //Class of new ta
+	"innerHTMLText":null, //HTML which will be wrapped inside body of new tag.
+	"innerHTMLFile": null, //HTML file location from which HTML will be injected same as innerHTMLText.
+	"fileJS": "", // location of javascript file which will be injected into DOM.
+	"JSParentTagName": "head", // tag name under which new <script> tag will be appended.
+	"JSParentTagNameIndex": 0, // index of the parent tag if there are multiple tags of same name
+	"menuButtonName": "", // name of button which will be created in annolet interface
+	"eventOnClick": "" // function to be called when user clicks dom element.
+}
+#+end_src
+
+** JavaScript
+**** Using jQuery noConflict
+To make the program more robust and avoid clash between variables with that of running website, jQuery noConflict() is used and normal ‘$’ selector is changed with ‘$j’.
+#+NAME: jquery_noConflict
+#+BEGIN_SRC js :tangle joiner.js
+var $j = jQuery.noConflict();
+#+END_SRC
+**** Declaring namespace
+Declaring a namespace will prevent conflicts between the variables declared in joiner code and those already present in browser by separating all the functions and variables declared in joiner code from those already present. This is done because joiner is a bookmarklet and can be loaded into any website, so there are more chances of conflicts.
+#+NAME: namespace
+#+begin_src js :tangle joiner.js
+var joiner = {}; //namespace declaration
+#+end_src
+
+Functions and objects under namespace =joiner=
+**** Function getJSON()
+This function will fetch the JSON manifest file and load it into DOM.
+#+BEGIN_SRC js :tangle joiner.js
+joiner.getJSON = function(){
+      /*
+        This function is for getting json from server and loading it to
+        frontend. it will help in calling webservices using
+        manifest JSON file.
+      */
+      var pathJSON = "//rawgit.com/SSS-Studio-development/joiner/master/src/manifest.json"+ "?v=" + parseInt(Math.random() * 999);
+      $j.getJSON(pathJSON, function(json) {
+          joiner.manifest = json;
+      });
+  };
+#+END_SRC
+**** Variable manifest
+When manifest file will be fetched by =getJSON= function, it will be copied into this variable.
+**** Function connectWebservices()
+This functions will go through each object in manifest file. Lets call each object a service. So it will check specification of the service and the service will be passed through injection functions if required.
+#+NAME: function_connectWebServices
+#+BEGIN_SRC js :tangle joiner.js
+joiner.connectWebservices = function() {
+    var services = joiner.manifest.services;
+    for(var i = 0; i < services.length; i++) {
+        services[i].id = i + 1; // reserving 0 for exit.
+        if (services[i].fileCSS !== null) {
+            joiner.inject.injectCSS(services[i]);
+            console.log("injectedCSS");
+        }
+        if (services[i].innerHTMLText !== null || services[i].innerHTMLFile !== null) {
+            joiner.inject.injectHTML(services[i]);
+            console.log("injectedHTML");
+        }
+        if (services[i].fileJS !== null) {
+            joiner.inject.injectJS(services[i]);
+            console.log("injectedJS");
+        }
+        if (services[i].menuButtonName !== null) {
+            joiner.createButtons(services[i]);
+            console.log("buttons done");
+        }
+    }
+};
+#+END_SRC
+**** Object inject
+It contains all the functions which are required to inject CSS/HTML/JS into the DOM. These functions are very main component of this script. They are responsible for exposing webservices to user.
+#+BEGIN_SRC js :tangle joiner.js
+joiner.inject = {};
+#+END_SRC
+***** Function injectCSS(service)
+      This function will inject CSS file into header of DOM as specified in service by webservice developer.
+#+NAME: function_injectCSS
+#+begin_src js :tangle joiner.js
+joiner.inject.injectCSS = function(service) {
+  var link = document.createElement('link');
+  // using rawgit.com MaxCDN.. files directly linked to git repo 'annoletjs/master'
+  link.href = service.fileCSS; //random version number removed bcoz some browser take it as text file and not as CSS.
+  link.type = "text/css";
+  link.rel = "stylesheet";
+  document.getElementsByTagName('head')[0].appendChild(link);
+};
+#+END_SRC
+***** Function injectHTML(service)
+This function will inject HTML into the DOM of webpage.
+#+NAME: function_injectHTML
+#+BEGIN_SRC js :tangle joiner.js
+joiner.inject.injectHTML = function(service) {
+// HTMLParentTagName: name of parent node (required, when you want to add HTML else leave this null)
+// HTMLParentTagNameIndex: index of parent node under which new element will be created(required, when you want to add HTML else leave this null)(default: null)
+// newTagName: name of new child node to be created(required, when you want to add HTML else leave this null)(default: null)
+// newTagId: id of newTagName (optional)(default: NULL)
+// newTagClass: className of newTagName (optional)(default: NULL)
+// innerHTMLFile: path to html file to be inserted into DOM. (required if innerHTMLText is not provided, when you want to add HTML else leave this null)
+//innerHTMLText: If you dont have saparate file for HTML, directly add HTML here in single string form, without spaces. (deapriciated)(its better to provide HTML Text inside your JS file)
+// if you dont want to add new child, then dont provide newTagId, newTagName, newTagClass
+
+    var parent = document.getElementsByTagName(service.HTMLParentTagName)[service.HTMLParentTagNameIndex]; // if newTagName is given, else append innerHTML to body.
+    if (service.newTagName !== null) {
+        var tagName = document.createElement(service.newTagName);
+        if (service.newTagId !== null) {
+            tagName.id += " " + service.newTagId;
+        }
+        if (service.newTagClass !== null) {
+            tagName.className += service.newTagClass;
+        }
+        if(service.innerHTMLFile !== null && service.innerHTMLText === null ){
+            $j.ajax({ url: service.innerHTMLFile, success: function(data) { 
+                tagName.innerHTML = data;
+                parent.appendChild(tagName);
+                console.log("injectingHTML");
+                } 
+            });
+        }
+        else if(service.innerHTMLFile === null && service.innerHTMLText !== null){
+             tagName.innerHTML = service.innerHTMLText;
+             parent.appendChild(tagName);
+             console.log("injectingHTML");
+        }
+
+    } 
+    else {
+        if(service.innerHTMLFile !== null && service.innerHTMLText === null ){
+            $j.ajax({ url: service.innerHTMLFile, success: function(data) { 
+                parent.innerHTML += "\n" + data;
+                console.log("injectingHTML");
+                } 
+            });
+        }
+        else if(service.innerHTMLFile === null && service.innerHTMLText !== null){
+            parent.innerHTML += "\n" + service.innerHTMLText;
+            console.log("injectingHTML");
+        }
+    }
+};
+#+END_SRC
+***** function injectJS(service)
+This function will inject JavaScript file provided by developer into DOM.
+#+NAME:function_injectJS
+#+BEGIN_SRC js :tangle joiner.js
+joiner.inject.injectJS = function(service) {
+  // JSParentTagName(required, if you want to add JS to DOM else leave empty)(defaut: null)
+  // JsParentTagNameIndex(required, if you want to add JS to DOM else leave empty)(default: null)
+  // jsLocation(required, if you want to add JS to DOM else leave empty)(default: null)
+
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = service.fileJS;
+    document.getElementsByTagName(service.JSParentTagName)[service.JSParentTagNameIndex].appendChild(script);
+    console.log("injectingJS");
+};
+#+END_SRC
+**** Function createButtons(service)
+#+NAME: function_createButtons
+#+BEGIN_SRC js :tangle joiner.js
+joiner.buttonHTML = ""; //defining variable
+joiner.createButtons = function(service) {
+    joiner.buttonHTML += "<li id='annolet' class=annolet-tools-menu-item onclick=" + service.eventOnClick + ">" + service.menuButtonName + "</li>";
+    console.log("butons created");
+};
+#+END_SRC
+**** Variable buttonHTML
+This variable will store HTML created by =createButtons()= function. This HTML will be responsible for creating buttons in Annolet UI.
+**** Function createUI(service)
+In manifest file first JSON object is called "initial" which contains information about UI of annolet or annolet webservice. =createUI= function adds =innerHTML= to that object and then pass it to inject functions.
+#+NAME: function_createUI
+#+BEGIN_SRC js :tangle joiner.js
+joiner.createUI = function(){
+  var menuUI = joiner.manifest.initial[0];
+  menuUI.innerHTMLText = "<ul id='annolet' class=annolet-tools-menu><span id='annolet' style='border-radius:10px; color:orange;font-weight:bold;font-family:monospace; font-size:1.3em'>AnnoLet!</span><span id='annolet' style='color:grey;'>|</span>"+ joiner.buttonHTML +"<li id='annolet' class=annolet-tools-menu-item id=annolet-exit-btn >exit</li></ul>";
+  joiner.inject.injectCSS(menuUI);
+  joiner.inject.injectHTML(menuUI);
+  joiner.inject.injectJS(menuUI);
+  console.log("ui created");
+};
+#+END_SRC
+**** Function run()
+This is the main function which is called first called. It is responsible for running all other functions in correct sequence.
+#+NAME: function_run
+#+BEGIN_SRC js :tangle joiner.js
+joiner.run = function(){
+	joiner.getJSON();
+	$j(window.joiner.manifest).load(function(){
+		      joiner.connectWebservices();
+		      joiner.createUI();});
+};
+#+END_SRC
+running the whole program by calling =run()= function
+#+BEGIN_SRC js :tangle joiner.js
+joiner.run();
+#+END_SRC
+* Testing
++ Successfully tested on Linux platform in browsers - Firefox, Chrome, Opera.
++ Successfully tested on Android platform in browser - Chrome.
++ To be tested on Windows and Mac OS.
+* Remaining Work
++ Adding persistence is under progress.
++ 'Exit' button in annolet ui is not working properly.
