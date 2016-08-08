@@ -51,8 +51,6 @@ build: init write-version
 	rm -f ${BUILD_DIR}/docs/*.html~
 	cp ${SRC_DIR}/webservices/word_list.p ${BUILD_DIR}/code/webservices/
 	cp ${SRC_DIR}/selenium/chromedriver ${BUILD_DIR}/code/selenium/
-	cp -rf  ${SRC_DIR}/selenium/style ${BUILD_DIR}/code/selenium/
-	cp -rf  ${SRC_DIR}/selenium/templates ${BUILD_DIR}/code/selenium/
 
 # get the latest commit hash and its subject line
 # and write that to the VERSION file

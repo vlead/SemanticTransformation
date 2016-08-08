@@ -8,8 +8,8 @@
 #+LATEX: Literal LaTeX code for export
 
 
-  - The source is written in JavaScript and jQuery 1.7 is used in it.
-  - *Release 0*
+- The source is written in JavaScript and jQuery 1.7 is used in it.
+- *Release 0*
 
   To run this program you need to need to setup flask server from [[https://github.com/SSS-Studio-development/web-services][here]]. After server is successfully running go to [[https://rawgit.com/SSS-Studio-development/annoletjs/master/annolet.html][Annolet!]].
 ------------------------------
@@ -21,11 +21,11 @@
    #+BEGIN_SRC js :tangle ../../code/annolet/annolet.js :eval no
      var $j = jQuery.noConflict();
    #+end_src
---------------------------
+   --------------------------
 ** Calling annolet_main() function
    #+BEGIN_SRC js :tangle ../../code/annolet/annolet.js :eval no
    annolet_main();
-#+end_src
+   #+end_src
 
 ** Function =annolet_createContainer()=
    This function creates a continer div which let the users interact with app.
@@ -33,7 +33,7 @@
    element of website to stylize the container and =<div id=annolet-container>...</div>= 
    whose inner HTML is a list of options inside =body=.
 
-#+BEGIN_SRC js :tangle ../../code/annolet/annolet.js :eval no
+   #+BEGIN_SRC js :tangle ../../code/annolet/annolet.js :eval no
 var annolet_btn;
 // function to create annolet controls container
 function annolet_createContainer() {
@@ -54,29 +54,32 @@ function annolet_createContainer() {
     document.getElementById('annolet-container').innerHTML = "<ul id='annolet' class=annolet-tools-menu>"+
     "<span id='annolet' style='border-radius:10px;  color:orange;font-weight:bold;font-family:monospace; font-size:1.3em'>AnnoLet!</span>"+
     "<span id='annolet' style='color:grey;'>|</span>"+
-    "<li id='annolet' class=annolet-tools-menu-item id=highlight-btn onclick='annolet_btn=1;'>TagIt!</li>"+
-    /*"<li id='annolet' class=annolet-tools-menu-item id=highlight-btn onclick='annolet_btn=2;'>Highlight</li>"+*/
-    "<li id='annolet' class=annolet-tools-menu-item id=highlight-btn onclick='annolet_btn=3;'>Phonetics</li>"+
-    "<li id='annolet' class=annolet-tools-menu-item id=highlight-btn onclick='annolet_btn=4;'>Translation</li>"+
-    "<li id='annolet' class=annolet-tools-menu-item id=exit-btn onclick='annolet_btn=0;'>exit</li>"+
-    "</ul>"; //HTML to create a list of options
+        "<li id='annolet' class=annolet-tools-menu-item id=highlight-btn onclick='annolet_btn=1;'>TagIt!</li>"+
+        /*"<li id='annolet' class=annolet-tools-menu-item id=highlight-btn onclick='annolet_btn=2;'>Highlight</li>"+*/
+        "<li id='annolet' class=annolet-tools-menu-item id=highlight-btn onclick='annolet_btn=3;'>Phonetics</li>"+
+        "<li id='annolet' class=annolet-tools-menu-item id=highlight-btn onclick='annolet_btn=4;'>Translation</li>"+
+        "<li id='annolet' class=annolet-tools-menu-item id=rtag-btn onclick='annolet_btn=6;'>rtag</li>"+
+        "<li id='annolet' class=annolet-tools-menu-item id=audio-btn onclick='annolet_btn=9;'>audio</li>"+
+        "<li id='annolet' class=annolet-tools-menu-item id=audio-btn onclick='annolet_btn=10;'>edit</li>"+
+        "<li id='annolet' class=annolet-tools-menu-item id=exit-btn onclick='annolet_btn=0;'>exit</li>"+
+        "</ul>"; //HTML to create a list of options
 }
-#+end_src
-#+begin_verse
+   #+end_src
+   #+begin_verse
     _The container div contains following options_
    - /Phonetics/: when a DOM node is clicked, it is replaced with its phonetic representation. On click =annolet_btn= is changed to 3.
    - /Translation/: when a DOM node is clicked, it is replaced with its Hindi translation. On click =annolet_btn= is changed to 4.
    - /Highlight/: to highlight the given node element. On click =annolet_btn= is chaned to 2. This feature is disabled for now. Will b
    - /tagit/: to start tagging DOM elements. It will also highlight clicked element. On click =annolet_btn= is changed to 1. 
    - /exit/: to stop all functions and remove container from body. On click =annolet_btn= is changed to 0.
-#+end_verse
----------------------------------------
+   #+end_verse
+   ---------------------------------------
 ** Functions to retrieve and evaluate Xpath of seleceted DOM element
    These functions are copied from [[https://code.google.com/p/fbug/source/browse/branches/firebug1.6/content/firebug/lib.js?spec=svn12950&r=8828#1332][Mozilla Firebug Opensource Code]]. Implemented  with small changes.
 *** Function =anno_getXpath(target)=
-   It returns string containing Xpath of selected element which is passed as an argument called =target=.
+    It returns string containing Xpath of selected element which is passed as an argument called =target=.
 
-#+BEGIN_SRC js :tangle ../../code/annolet/annolet.js :eval no
+    #+BEGIN_SRC js :tangle ../../code/annolet/annolet.js :eval no
 // function to get Xpath to passed element
 function anno_getXpathTo(element) {
     if (element.id !== '') {
@@ -97,32 +100,35 @@ function anno_getXpathTo(element) {
         }
     }
 }
-#+end_src
---------------------------------------   
+    #+end_src
+    --------------------------------------   
 *** Function =anno_getElementByXpath(xpath)=
     This function returns that element as object whose Xpath is passed as an argument through it.
 
-#+BEGIN_SRC js :tangle ../../code/annolet/annolet.js :eval no
+    #+BEGIN_SRC js :tangle ../../code/annolet/annolet.js :eval no
 // function to evaluate element from Xpath
 function anno_getElementByXpath(xpath) {
     return document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
 }
-#+end_src 
---------------------------------
+    #+end_src 
+    --------------------------------
 ** Functions
 *** =annolet_main()=
-   =annolet_main()= is main function which will on execution calls =annolet_createContainer()= and monitors document
-   for mouse clicks. On click, clicked element is selected as target which is passed through
-   function =annolet_getXpath= and returned Xpath is stored in variable =xpath=.
-   =annolet_main()= function always check for the current value of =annolet_btn= whenever user clicks.
-   On the bases of this value, preffered function =anno_highlight()= for 1 is called. More option will be added later.
+    =annolet_main()= is main function which will on execution calls =annolet_createContainer()= and monitors document
+    for mouse clicks. On click, clicked element is selected as target which is passed through
+    function =annolet_getXpath= and returned Xpath is stored in variable =xpath=.
+    =annolet_main()= function always check for the current value of =annolet_btn= whenever user clicks.
+    On the bases of this value, preffered function =anno_highlight()= for 1 is called. More option will be added later.
 
-#+BEGIN_SRC js :tangle ../../code/annolet/annolet.js :eval no
+    #+BEGIN_SRC js :tangle ../../code/annolet/annolet.js :eval no
 //main function which will execute other functions
 function annolet_main() {
     disableAllLinks()  // it will disable all the links present in webpage iteratively
     annolet_createContainer();
+    add_tagging();
     document.onclick = function(event) {
+        console.log("mouse down hello");
+        event.preventDefault();
         if (event === undefined) {
             event = window.event;
         } // for IE
@@ -132,16 +138,39 @@ function annolet_main() {
         if (annolet_btn === 1) {
             anno_highlight(xpath);
         }
+        if(annolet_btn === 4){
+            anno_language(xpath);
+        }
+        else if (annolet_btn == 3){
+            anno_phonetic(xpath);
+        }
+        else if (annolet_btn===6){
+          anno_rtag(xpath);
+        }
+        else if (annolet_btn===9)
+        {
+            anno_audio(xpath);
+        }
+        else if (annolet_btn===10)
+        {
+             anno_edit(xpath);
+        }
+        else if (annolet_btn===0)
+        {
+             anno_remove_edit(xpath);
+        }
+
     };
+
 }
 
-#+end_src
-   --------------------------------
+    #+end_src
+    --------------------------------
 *** =disableAllLinks()=
-This function iterates through all the links (=<a>= tags) and disable them so 
-that user will not go out of webpage while annotating webpage.
+    This function iterates through all the links (=<a>= tags) and disable them so 
+    that user will not go out of webpage while annotating webpage.
 
-#+BEGIN_SRC js :tangle ../../code/annolet/annolet.js :eval no
+    #+BEGIN_SRC js :tangle ../../code/annolet/annolet.js :eval no
 // funtion to disable all links
 function disableAllLinks(){
     var anchors = document.getElementsByTagName("a");
@@ -149,14 +178,14 @@ function disableAllLinks(){
         anchors[i].onclick = function() {return(false);};
     }
 }
-#+end_src
+    #+end_src
 *** =annolet_insertIntoObject(xpath)=
     This function will create an object called =annolet_obj= which will contain authorname(username), url(which is annotated) 
     and array of xpaths with tagName and tagType(like language, point of view). Everytime user clicks element, this function will run, so
     as to assure that all the work done is saved for retreival in future. Xpath is passed through it as argument. Function tagObject is used
     to push tagging information to tags array.
 
-#+BEGIN_SRC js :tangle ../../code/annolet/annolet.js :eval no
+    #+BEGIN_SRC js :tangle ../../code/annolet/annolet.js :eval no
 //function to store tags into JSON object.
 var annolet_obj = 0; //will save jason objects
 function annolet_insertIntoObject(xpath) {
@@ -173,12 +202,12 @@ function annolet_insertIntoObject(xpath) {
     tagObject(xpath, annolet_obj);
   }
 }
-#+end_src
-------------------------------
+    #+end_src
+    ------------------------------
 *** =tagObject(xpath, obj)= 
     This function asks user for tagging information and push it to tags array of =annolet_obj=.
 
-#+BEGIN_SRC js :tangle ../../code/annolet/annolet.js :eval no
+    #+BEGIN_SRC js :tangle ../../code/annolet/annolet.js :eval no
 function tagObject(xpath, obj){
   tagName = prompt('tagName:');
   tagInfo = prompt('tagInfo');
@@ -190,7 +219,7 @@ function tagObject(xpath, obj){
     }
   )
 }
-#+end_src
+    #+end_src
 *** =anno_highlight(xpath)=
     This function takes =xpath= as argument. Xpath of an element is passed to =anno_getElementByXpath(xpath)=
     which returns element in obect form. Then that object is selected using jQuery and using =wrapInner()= function 
@@ -198,7 +227,7 @@ function tagObject(xpath, obj){
     =annolet_insertIntoObject()= creates an object and push it to object array.So it can be saved for future to a 
     server. It also prevents annolet container from highlighting itself.
 
-#+BEGIN_SRC js :tangle ../../code/annolet/annolet.js :eval no
+    #+BEGIN_SRC js :tangle ../../code/annolet/annolet.js :eval no
 //function for highlighting element
 function anno_highlight(xpath) {
     clicked_element = anno_getElementByXpath(xpath)
@@ -212,17 +241,17 @@ function anno_highlight(xpath) {
       annolet_insertIntoObject(xpath); // storing into object
     }
 }
-#+end_src   
----------------------------------
+    #+end_src   
+    ---------------------------------
 *** =anno_annotate()=
 **** /not complete/
-In this function I will use some functionality of =annolet_highlight()= function, then another function which will create 
-a div containing =textarea=. This box will add to fixed div which will slide up. There will be two options in that box, 
-1.save 
-2.cancel. 
-On clicking save, the content variable will become equal to the textarea value and then =annolet_pushToStack()= will be called. Right now there is no method for retrieval of annotations.
-#+NAME:anno_annotate
-#+begin_src js
+     In this function I will use some functionality of =annolet_highlight()= function, then another function which will create 
+     a div containing =textarea=. This box will add to fixed div which will slide up. There will be two options in that box, 
+     1.save 
+     2.cancel. 
+     On clicking save, the content variable will become equal to the textarea value and then =annolet_pushToStack()= will be called. Right now there is no method for retrieval of annotations.
+     #+NAME:anno_annotate
+     #+begin_src js
 function anno_annotate(xpath){
 if (anno_getElementByXpath(xpath).id != "mark" || !(anno_getElementByXpath(xpath).id)) {
         //adding orange coloured border around selected part.
@@ -232,15 +261,19 @@ if (anno_getElementByXpath(xpath).id != "mark" || !(anno_getElementByXpath(xpath
         console.log('highlighted already');
     }
 }
-#+end_src
-------
+     #+end_src
+     ------
 *** =get_phonetics=
 
-+ This makes a request to the webservices and gets the phonetic translation of
-the string that is passed to it.
-+ Make sure that the webservice is running if on the local host
+This makes a request to the webservices and gets the phonetic translation of
+the string that is passed to it. It makes an HTTP request to the server with
+json containing the sentence. sentence field is compulsary here as the API by
+the webservice requires it.
+It puts the phonetic translated of the text given in the global variable
+phonetic_trans .
+Make sure that the webservice is running if on the local host .
 
-#+BEGIN_SRC js :tangle ../../code/annolet/annolet.js :eval no
+    #+BEGIN_SRC js :tangle ../../code/annolet/annolet.js :eval no
 var phonetic_trans = "default_value";
 var language_trans = "default_value";
 
@@ -265,16 +298,22 @@ function get_phonetics(str){
   }
 
 }
-#+end_src
+    #+end_src
 
 *** =get_languagetrans()=
 
-+ This makes a request to the webservices and gets the language translation of
-the string that is passed to it.
-+ Make sure that the webservice is running if on the local host
 
+This makes a request to the webservices and gets the language translation of
+the string that is passed to it. It makes an HTTP request to the server with
+json containing the sentence. sentence field is compulsary here as the API by
+the webservice requires it.
+It takes in three parameters string to be translated, from language and to
+language.
+It puts the language translation of the text given in the global variable
+language_trans .
+Make sure that the webservice is running if on the local host .
 
-#+BEGIN_SRC js :tangle ../../code/annolet/annolet.js :eval no
+    #+BEGIN_SRC js :tangle ../../code/annolet/annolet.js :eval no
 function get_languagetrans(str,fr,to){
 
   var xhr = new XMLHttpRequest();
@@ -295,11 +334,21 @@ function get_languagetrans(str,fr,to){
   }
 
 }
-#+end_src
+    #+end_src
 
 *** =anno_phonetic()=
 
-#+BEGIN_SRC js :tangle ../../code/annolet/annolet.js :eval no
+This function is used to put the phonetic translation of the text to its place
+on the webpage. 
+It takes the entire innerhtml of the node specified by the xpath passed and
+uses the function get_phonetics to get the translation. Timer is set here as it
+might take some time to make request to the server and get the response back .
+Till it gets the response back, the global variable phonetic_trans has value
+"default value",after it gets the translation, it replaces the string and sets
+the global variable phonetic_trans back to "default value"
+
+
+    #+BEGIN_SRC js :tangle ../../code/annolet/annolet.js :eval no
 //function for getting phonetic
 function anno_phonetic(xpath) {
   clicked_element = anno_getElementByXpath(xpath);
@@ -335,9 +384,19 @@ function anno_phonetic(xpath) {
     }
   }
 }
-#+end_src
+    #+end_src
 
 *** =anno_language()=
+
+This function is used to put the language translation of the text to its place
+on the webpage. 
+It takes the entire innerhtml of the node specified by the xpath passed and
+uses the function get_language to get the translation. Timer is set here as it
+might take some time to make request to the server and get the response back .
+Till it gets the response back, the global variable language_trans has value
+"default value",after it gets the translation, it replaces the string and sets
+the global variable language_trans back to "default value"
+
 
 #+BEGIN_SRC js :tangle ../../code/annolet/annolet.js :eval no
 //function for getting phonetic
@@ -376,4 +435,111 @@ function anno_language(xpath) {
     }
   }
 }
-#+end_src
+    #+end_src
+*** =anno_audio()=
+
+This function is used to add audio to annolet . It uses online available API
+which is available [[http://www.voicerss.org/][here]] . It adds an audio tag with required parameters and
+after the audio is played, it deletes it . The audio tag remains hidden.
+And after the audio is played, it deletes the audio tag from the webpage.
+
+#+BEGIN_SRC js :tangle ../../code/annolet/annolet.js :eval no
+
+function anno_audio(xpath)
+{
+    if (window.getSelection().toString().length!==0) {
+        console.log("inside audio");
+        var clicked_element = anno_getElementByXpath(xpath);
+        var node = document.createElement("audio");
+        var prop1 = document.createAttribute("src");
+        var prop2 = document.createAttribute("controls");
+        var prop3 = document.createAttribute("autoplay");
+        var prop4 = document.createAttribute("id");
+        var string1 = "https://api.voicerss.org/?key=24041d6a5a6c4f0db89edfbff791e8cb&src=";
+        var string2 = window.getSelection().toString();
+        var string3 = "&hl=en-in";
+        var str = string1.concat(string2,string3);
+        prop1.value = str;
+        prop4.value = "uniqueid";
+        node.setAttributeNode(prop1);
+        node.setAttributeNode(prop2);
+        node.setAttributeNode(prop3);
+        node.setAttributeNode(prop4                         );
+        clicked_element.appendChild(node);
+        document.getElementById("uniqueid").remove();
+
+    }
+}
+
+
+#+END_SRC
+
+*** =add_tagging()=
+
+This is the function used to add the menu for tagging webservice, it adds the
+required html, javascript and css for the menu.
+The HTML though added initially is hidden, till the webservice is required
+. whenever required, hidden is removed from the div tag.
+
+#+BEGIN_SRC js :tangle ../../code/annolet/annolet.js :eval no
+
+This function is used to add tagging to annolet. It injects the HTML for the tagging menu and the required styling and javascript
+
+
+function add_tagging()
+{
+  $j("body").append('<div id=\"page-wrap\" hidden> <ul class=\"annolet_dropdown\"> <li><a href=\"#\" >Event</a> <ul class=\"sub_menu\"> <li> <a href=\"#\" onclick=\"func_tagging(\'event-name\')\">Name</a> </li> <li> <a href=\"#\">Date</a> <ul> <li><a href=\"#\" onclick=\"func_tagging(\'event-date-startdate\')\" >Start date</a></li> <li><a href=\"#\" onclick=\"func_tagging(\'event-date-enddate\')\">End date</a></li> </ul> </li> <li> <a href=\"#\">Location</a> <ul> <li><a href=\"#\" onclick=\"func_tagging(\'event-location-street\')\" >Street</a></li> <li><a href=\"#\" onclick=\"func_tagging(\'event-location-area\')\">Area</a></li> <li><a href=\"#\" onclick=\"func_tagging(\'event-location-city\')\">City</a></li> </ul> </li> </ul> </li> <li><a href=\"#\" >Organization</a> <ul class=\"sub_menu\"> <li> <a href=\"#\" onclick=\"func_tagging(\'organization-owner\')\">Owner</a> </li> <li> <a href=\"#\" onclick=\"func_tagging(\'organization-employee\')\" >Employee</a> </li> <li> <a href=\"#\" onclick=\"func_tagging(\'organization-contact\')\">Contact</a> </li> <li> <a href=\"#\">Location</a> <ul> <li><a href=\"#\" onclick=\"func_tagging(\'organization-location-street\')\">Street</a></li> <li><a href=\"#\" onclick=\"func_tagging(\'organization-location-area\')\">Area</a></li> <li><a href=\"#\" onclick=\"func_tagging(\'organization-location-city\')\">City</a></li> </ul> </li> </ul> </li> <li><a href=\"#\" >Person</a> <ul class=\"sub_menu\"> <li> <a href=\"#\">Name</a> <ul> <li><a href=\"#\" onclick=\"func_tagging(\'person-name-firstname\')\" >First Name</a></li> <li><a href=\"#\" onclick=\"func_tagging(\'person-name-secondname\')\">Second Name</a></li> </ul> </li> <li> <a href=\"#\">Address</a> <ul> <li><a href=\"#\" onclick=\"func_tagging(\'person-address-street\')\">Street</a></li> <li><a href=\"#\" onclick=\"func_tagging(\'person-address-area\')\">Area</a></li> <li><a href=\"#\" onclick=\"func_tagging(\'person-address-city\')\">City</a></li> </ul> </li> <li> <a href=\"#\" onclick=\"func_tagging(\'person-contact\')\">Contact</a> </li> </ul> </li> <li><a href=\"#\" >Date</a> <ul class=\"sub_menu\"> <li> <a href=\"#\" onclick=\"func_tagging(\'date-startdate\')\">Start date</a> </li> <li> <a href=\"#\" onclick=\"func_tagging(\'person-enddate\')\">End date</a> </li> </ul> </li> <li><a href=\"#\" >Currency</a> <ul class=\"sub_menu\"> <li> <a href=\"#\" onclick=\"func_tagging(\'currency-rupee\')\">Rupee</a> </li> <li> <a href=\"#\" onclick=\"func_tagging(\'currency-dollar\')\">Dollar</a> </li> <li> <a href=\"#\" onclick=\"func_tagging(\'currency-euro\')\">Euro</a> </li> </ul> </li> <li><a href=\"#\" >Unit</a> <ul class=\"sub_menu\"> <li> <a href=\"#\" onclick=\"func_tagging(\'unit-si\')\">SI</a> </li> <li> <a href=\"#\" onclick=\"func_tagging(\'unit-cgi\')\">CGI</a> </li> <li> <a href=\"#\" onclick=\"func_tagging(\'unit-fps\')\">FPS</a> </li> </ul> </li> </ul> </div>');
+
+  $j("head").append('<script src="https://rawgit.com/SSS-Studio-development/tagging/master/js/tagging.js">    </script>');
+
+  $j("head").append('<link rel="stylesheet" href="https://rawgit.com/SSS-Studio-development/tagging/master/css/style.css" type="text/css" media="screen, projection"/>');
+  
+ 
+}
+
+#+END_SRC
+*** =anno_rtag()=
+
+This is used to remove the hidden tag for the html content of the tagging web
+services. 
+
+#+BEGIN_SRC js :tangle ../../code/annolet/annolet.js :eval no
+
+function anno_rtag(xpath)
+{
+  var temp=document.getElementById("page-wrap");
+  console.log(temp);
+  document.getElementById("page-wrap").removeAttribute("hidden");
+}
+
+#+END_SRC
+
+*** =anno_edit()=
+
+This function adds the contenteditable property to body, by adding it , the
+entire text on the webpage can be edited.
+
+
+#+BEGIN_SRC js :tangle ../../code/annolet/annolet.js :eval no
+
+function anno_edit(xpath)
+{
+        document.getElementsByTagName("body")[0].setAttribute('contenteditable','true');
+}
+
+#+END_SRC
+
+*** =anno_remove_edit()=
+
+#+BEGIN_SRC js :tangle ../../code/annolet/annolet.js :eval no
+
+This function just removes the contenteditable tag if present and hides the menu 
+of the tagging service.
+
+function anno_remove_edit(xpath)
+{
+  document.getElementsByTagName("body")[0].removeAttribute('contenteditable');
+  document.getElementById("page-wrap").setAttribute("hidden","");
+}
+
+#+END_SRC

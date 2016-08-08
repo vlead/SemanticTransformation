@@ -2,7 +2,7 @@
 A web based annotation system which enables the transformation of existing, published web content. 
 
 
-# release 0 instructions
+# release 1 instructions
 
 ## make the code / doc 
 A makefile exists to setup the execution environment. This will setup the build directory with the necessary code and documentation files. The docs are in build/doc directory. The code is present in build/code directory. These two directories are untangled from the literate code that we have used to document this application
@@ -13,7 +13,7 @@ make
 ```
 
 ## Setup the Selinium Server
-The following steps are needed for setting up the Selenium server. This is needed in the backend to inject the first JavaScript code bookmarklet code (called Annolet for r0, annd Joiner for r1). 
+The following steps are needed for setting up the Selenium server. This is needed in the backend to inject the first JavaScript code bookmarklet code (Joiner for r1). 
 
 ### Configure Selenium 
 we need to configuration of the Selenium Server with a secret key and path for the Selenium Chrome Driver. To do this we need to edit the conf.py file in build/code/selenium directory. 

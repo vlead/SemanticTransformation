@@ -1,5 +1,5 @@
 #+TITLE: Renarration Web Application
-#+AUTHOR: Sai Gollapudi @ VLEAD, IIIT Hyderabad
+#+AUTHOR: Sai
 #+DATE: [2016-06-24 Wed]
 #+PROPERTY: results output
 #+PROPERTY: exports code

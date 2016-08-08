@@ -89,12 +89,6 @@ def index():
 
 * webdriver
 
-+ Selenium webdriver is a web automation tool which is used to open webpage and inject javascript into DOM. That script will load Annolet.
-+ Function =run_selenium= will get browser version, browser name, platform(windows/linux/mac) and user_agent string which will provide information about current browser in which user is logged in.
-+ Then object of webdriver will be created which will trigger new browser window and open the URL given by user. 
-+ It will wait(for maximum 30 seconds) for head of DOM to load completely and then inject JS into it.
-
-
 This function opens a new browser and injects the required javascript into the
 head section of the webpage.
 
@@ -149,7 +143,7 @@ def run_selenium(passed_url):
         print ("injecting script")
 
         # rawgit.com MaxCDN service used.. js file is at github repo annoletjs/master
-        driver.execute_script("!function(){function e(){script=document.createElement('script'),script.type='text/javascript',script.src='//rawgit.com/SSS-Studio-development/annoletjs/tagging/annolet_main.js',document.getElementsByTagName('head')[0].appendChild(script)}($=window.jQuery)?e():(script=document.createElement('script'),script.src='//ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js',script.onload=e,document.getElementsByTagName('head')[0].appendChild(script))}();")
+        driver.execute_script("!function(){function e(){script=document.createElement('script'),script.type='text/javascript',script.src='https://raw.githubusercontent.com/SSS-Studio-development/annoletjs/master/annolet_main.js',document.getElementsByTagName('head')[0].appendChild(script)}($=window.jQuery)?e():(script=document.createElement('script'),script.src='//ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js',script.onload=e,document.getElementsByTagName('head')[0].appendChild(script))}();")
         print ("injected")
     return 'annotate'
 @app.route('/annotate')
@@ -158,8 +152,6 @@ def enjoy():
 
 #+END_SRC
 
-
-It is successfully tested on Firefox and chrome browser.
 
 * run
 
@@ -176,10 +168,9 @@ if __name__ == '__main__':
 * configuration
 
 Setting up the secret key for your application
-Adding path to chromedriver for Chrome browser support
+
 #+BEGIN_SRC python :tangle ../../code/selenium/conf.py :eval no
-SECRET_KEY = ('',) # some long string
-CHROME_DRIVER_PATH = ('',) #complete path to chromedriver
+SECRET_KEY = ('') # some long string
 #+END_SRC
 
  
